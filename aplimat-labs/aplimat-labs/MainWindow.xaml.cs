@@ -30,14 +30,15 @@ namespace aplimat_labs
             //while (true) Console.WriteLine(rng.Generate());
         }
 
-        private List<CubeMesh> myCubes = new List<CubeMesh>();
+       // private List<CubeMesh> myCubes = new List<CubeMesh>();
+       private Vector3 velocity = new Vector3(10, 10, 0);
+        //private List<CubeMesh> myCube = new List<CubeMesh>();
 
+        private CubeMesh myCube = new CubeMesh();
+      //  private Randomizer rng = new Randomizer(-1, 1);
+       // private Randomizer ypos = new Randomizer(-20, 20);
 
-      //  private CubeMesh myCube = new CubeMesh();
-        private Randomizer rng = new Randomizer(-1, 1);
-        private Randomizer ypos = new Randomizer(-20, 20);
-
-        private Randomizer rngColor = new Randomizer(0, 1);
+       // private Randomizer rngColor = new Randomizer(0, 1);
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
             OpenGL gl = args.OpenGL;
@@ -47,22 +48,41 @@ namespace aplimat_labs
 
             // Move Left And Into The Screen
             gl.LoadIdentity();
-            gl.Translate(0.0f, 0.0f, -40.0f);
+            gl.Translate(0.0f, 0.0f, -100.0f);
 
+            myCube.Draw(gl);
+            myCube.Position += velocity;
 
-            CubeMesh myCube = new CubeMesh();
-            
-            myCube.Position = new Vector3(Gaussian.Generate(0,20), ypos.GenerateDouble(), 0);
-            myCubes.Add (myCube);
+            //CubeMesh myCube = new CubeMesh();
 
-           
-
-
-            foreach (CubeMesh cube in myCubes)
+            //myCube.Position = new Vector3(Gaussian.Generate(0,20), ypos.GenerateDouble(), 0);
+            //myCubes.Add (myCube);
+            if(myCube.Position.x >= 25.0f)
             {
-                cube.Draw(gl);
-                gl.Color(rngColor.GenerateDouble(),rngColor.GenerateDouble(), rngColor.GenerateDouble());
+                velocity.x = -1;
             }
+            else if(myCube.Position.x <= -25.0f)
+            {
+                velocity.x = 1;
+            }
+
+            if (myCube.Position.y >= 10.0f)
+            {
+                velocity.y = -1;
+
+            }
+            else if (myCube.Position.y <= -10.0f)
+            {
+                velocity.y = 1;
+
+            }
+
+
+         //   foreach (CubeMesh cube in myCubes)
+          //  {
+                //cube.Draw(gl);
+                //gl.Color(rngColor.GenerateDouble(),rngColor.GenerateDouble(), rngColor.GenerateDouble());
+          //  }
         }
 
         private void OpenGLControl_OpenGLInitialized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
