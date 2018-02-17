@@ -68,6 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\CubeMesh.cs" />
+    <Compile Include="Models\Movable.cs" />
     <Compile Include="Models\Vector3.cs" />
     <Compile Include="Utilities\Gaussian.cs" />
     <Compile Include="Utilities\Randomizer.cs" />

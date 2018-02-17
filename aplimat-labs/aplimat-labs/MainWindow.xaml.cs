@@ -27,27 +27,17 @@ namespace aplimat_labs
         {
             InitializeComponent();
 
-            myVector = a - b;
-            Console.WriteLine(myVector.GetMagnitude());
-
-            //while (true) Console.WriteLine(rng.Generate());
+        
         }
 
-       // private List<CubeMesh> myCubes = new List<CubeMesh>();
-       private Vector3 velocity = new Vector3(10, 10, 0);
-        //private List<CubeMesh> myCube = new List<CubeMesh>();
+        private CubeMesh mover = new CubeMesh(-25, 0, 0);
+        private Vector3 acceleration = new Vector3(0.01f, 0, 0);
+      
+     
 
-        private CubeMesh myCube = new CubeMesh();
-        private float speed = 2.0f;
-        //  private Randomizer rng = new Randomizer(-1, 1);
-        // private Randomizer ypos = new Randomizer(-20, 20);
-
-
+        private Vector3 mousePos = new Vector3();
         private Vector3 myVector = new Vector3();
-
-        private Vector3 a = new Vector3(3, 5, 0);
-        private Vector3 b = new Vector3(-7,-6,0);
-       // private Randomizer rngColor = new Randomizer(0, 1);
+        
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
             OpenGL gl = args.OpenGL;
@@ -56,28 +46,86 @@ namespace aplimat_labs
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
             // Move Left And Into The Screen
-            gl.LoadIdentity();
-            gl.Translate(0.0f, 0.0f, -100.0f);
+           gl.LoadIdentity();
+            gl.Translate(0.0f, 0.0f, -40.0f);
+
+
+            mover.Draw(gl);
+            mover.Velocity +=acceleration;
+            mover.Velocity.Clamp(2.0f);
+
+            bool Bounce = false;
+
+            if  (mover.Position.x >= 25)
+            {
+                Bounce = true;
+                mover.Velocity.x *= -1f;
+                acceleration = new Vector3(0.10f, 0, 0);
+                
+            }
+
+            else if (mover.Position.x == 0)
+            {
+                Bounce = false;
+                mover.Velocity.x -= -1f;
+            }
+
+            if (Bounce == true && mover.Velocity.x >= 0)
+            {
+                mover.Velocity.x = 0;
+                mover.Position.x = -15;
+                Bounce = false;
+                
+                //acceleration = new Vector3(-0.05f, 0, 0);
+            }
+
+
+            gl.DrawText(20, 20, 1, 0, 0, "Arial", 25, mover.Velocity.x + "  ");
+
+
+
+
+
+
+           // mousePos.Normalize();
+           // mousePos *= 10;
 
             //myCube.Draw(gl);
             //myCube.Position += velocity * speed; 
-            gl.Color(1.0f, 0.0f, 0.0f);
+           /* gl.Color(1.0f, 0.0f, 0.0f);
             gl.LineWidth(30.0f);
             gl.Begin(OpenGL.GL_LINE_STRIP);
-            gl.Vertex(0, 0);
-            gl.Vertex(a.x, a.y);
+            gl.Vertex(0, 0 , 0);
+            gl.Vertex(mousePos.x, mousePos.y,0);
             gl.End();
 
 
             gl.Color(1.0f, 1.0f, 1.0f);
             gl.LineWidth(5.0f);
             gl.Begin(OpenGL.GL_LINE_STRIP);
-
-            gl.Vertex(0, 0);
-            gl.Vertex(a.x, a.y);
+            gl.Vertex(0, 0, 0);
+            gl.Vertex(mousePos.x, mousePos.y, 0);
             gl.End();
 
-            gl.DrawText(100, 100, 1, 1, 1, "Courier New", 48, "Vector mag: " + a.GetMagnitude());
+            gl.Color(1.0f, 0.0f, 0.0f);
+            gl.LineWidth(30.0f);
+            gl.Begin(OpenGL.GL_LINE_STRIP);
+            gl.Vertex(0, 5, 0);
+            gl.Vertex(mousePos.x, mousePos.y, 0);
+            gl.End();
+
+
+            gl.Color(1.0f, 1.0f, 1.0f);
+            gl.LineWidth(5.0f);
+            gl.Begin(OpenGL.GL_LINE_STRIP);
+            gl.Vertex(0, 5, 0);
+            gl.Vertex(mousePos.x, mousePos.y, 0);
+            gl.End();
+
+
+
+            */
+            
 
             /*
             Point position = PointToScreen(Mouse.GetPosition(this);
@@ -85,22 +133,7 @@ namespace aplimat_labs
             myVector.y = (float)position.Y;
 
             */
-            if (Keyboard.IsKeyDown(Key.W))
-            {
-                a.y += 1.0f;
-            }
-            if (Keyboard.IsKeyDown(Key.S))
-            {
-                a.y += -1.0f;
-            }
-            if (Keyboard.IsKeyDown(Key.D))
-            {
-                a.x += 1.0f;
-            }
-            if (Keyboard.IsKeyDown(Key.A))
-            {
-                a.x += -1.0f;
-            }
+           
            
             /*
                         gl.Color(0.0f, 1.0f, 0.0f);
@@ -143,6 +176,23 @@ namespace aplimat_labs
             gl.Disable(OpenGL.GL_LIGHT0);
            
             gl.ShadeModel(OpenGL.GL_SMOOTH);
+        }
+
+        private void OpenGLControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pos = e.GetPosition(this);
+
+            mousePos.x = (float)pos.X - (float)Width / 2.0f;
+            mousePos.y = (float)pos.Y - (float)Height / 2.0f;
+
+            mousePos.y = -mousePos.y;
+
+            // mousePos = new Vector3(e.GetPosition(this).X, e.GetPosition(this).Y, 0);
+
+            //mousePos.x = (float)mousePos.x - (float)Width / 2.0f;
+            //mousePos.y = (float)mousePos.y - (float)Height / 2.0f;
+
+            Console.WriteLine("mouse X : " + mousePos.x + "mouse Y:" + mousePos.y);
         }
     }
 }
