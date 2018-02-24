@@ -61,16 +61,20 @@ namespace aplimat_labs
             gl.End();
 
 
-            ApplyVelocity();
+            UpdateMotion();
 
         }
 
         
 
-        private void ApplyVelocity()
+        private void UpdateMotion()
         {
-            this.Position += Velocity;
+            this.Velocity += this.Acceleration;
+            this.Position += this.Velocity;
+            this.Acceleration *= 0;
 
         }
+
+        
     }
 }
