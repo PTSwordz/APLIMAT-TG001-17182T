@@ -23,33 +23,30 @@ namespace aplimat_labs
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<CubeMesh> cubeList = new List<CubeMesh>();
+        private CubeMesh myCube = new CubeMesh(0, 20, 0);
+        private Liquid ocean = new Liquid(0, 0, 100, 50, 0.8f);
+
         public MainWindow()
         {
             InitializeComponent();
 
-        
+            int xPos = 50;
+            for (int i = 0; i <= 10; i++)
+            {
+                cubeList.Add(new CubeMesh()
+                {
+                    Position = new Vector3(xPos - (i * 10), 20, 0),
+                    Mass = i + 1
+                    
+                });
+            }
+
         }
 
-        private CubeMesh lightCube = new CubeMesh()
-        {
-           // Acceleration = new Vector3(0.1f,0,0),
-            Position = new Vector3(-25,0,0),
-            Mass = 5
-        };
+      
 
-        private CubeMesh medCube = new CubeMesh()
-        {
-            // Acceleration = new Vector3(0.1f,0,0),
-            Position = new Vector3(-25, 0, 0),
-            Mass = 10
-        };
-
-        private CubeMesh heavyCube = new CubeMesh()
-        {
-            // Acceleration = new Vector3(0.1f,0,0),
-            Position = new Vector3(-25, 0, 0),
-            Mass = 15
-        };
+     
 
         private Vector3 wind = new Vector3(1f, 0, 0);
         private Vector3 gravity = new Vector3(0.0f, -0.5f, 0.0f );
@@ -64,59 +61,36 @@ namespace aplimat_labs
 
             // Move Left And Into The Screen
            gl.LoadIdentity();
-            gl.Translate(0.0f, 0.0f, -40.0f);
+            gl.Translate(0.0f, 0.0f, -100.0f);
 
-            gl.Color(0, 0, 1.0f);
-            lightCube.Draw(gl);
-            lightCube.ApplyForce(gravity);
-            lightCube.ApplyForce(wind);
+            ocean.Draw(gl);
 
-
-
-            gl.Color(1.0f, 0, 0);
-            medCube.Draw(gl);
-            medCube.ApplyForce(gravity);
-            medCube.ApplyForce(wind);
-
-
-            gl.Color(0, 1.0f, 0);
-            heavyCube.Draw(gl);
-            heavyCube.ApplyForce(gravity);
-            heavyCube.ApplyForce(wind);
-
-            if (lightCube.Position.x >= 25 )
+            foreach (CubeMesh cube in cubeList)
             {
-                lightCube.Velocity.x *= -1;
-                
-            }
-            if (lightCube.Position.y >= 20 || lightCube.Position.y <= -15)
-            {
-                lightCube.Velocity.y *= -1;
-                
-            }
-            if (medCube.Position.x >= 25 )
-            {
-                medCube.Velocity.x *= -1;
-                
-            }
-            if (medCube.Position.y >= 20 || medCube.Position.y <= -15)
-            {
-                medCube.Velocity.y *= -1;
-                
-            }
+                gl.Color(1.0f, 1.0f, 1.0f);
+                cube.Scale = new Vector3( cube.Mass / 2,  cube.Mass / 2,  cube.Mass / 2);
+                cube.Draw(gl);
+                cube.ApplyGravity();
+                cube.ApplyForce(new Vector3(0.1f, 0, 0));
 
-            if (heavyCube.Position.x >= 25 )
-            {
-                heavyCube.Velocity.x *= -1;
-                
-            }
-            if (heavyCube.Position.y >= 20 || heavyCube.Position.y <= -15)
-            {
-                heavyCube.Velocity.y *= -1;
-               
+                if (cube.Position.y <= -40)
+                {
+                    cube.Position.y = -40;
+                    cube.Velocity.y *= -1;
+                }
+
+                if (ocean.Contains(cube))
+                {
+                    var dragForce = ocean.CalculateDragForce(cube);
+                    cube.ApplyForce(dragForce);
+                }
             }
 
 
+
+            
+
+          
         }
 
         private void OpenGLControl_OpenGLInitialized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)

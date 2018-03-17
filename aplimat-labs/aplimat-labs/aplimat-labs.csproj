@@ -67,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Liquid.cs" />
     <Compile Include="Models\CubeMesh.cs" />
     <Compile Include="Models\Movable.cs" />
     <Compile Include="Models\Vector3.cs" />
