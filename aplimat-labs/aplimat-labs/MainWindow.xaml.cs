@@ -23,24 +23,37 @@ namespace aplimat_labs
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<CubeMesh> cubeList = new List<CubeMesh>();
+       // private List<CubeMesh> cubeList = new List<CubeMesh>();
         private CubeMesh myCube = new CubeMesh(0, 20, 0);
         private Liquid ocean = new Liquid(0, 0, 100, 50, 0.8f);
 
+        
+
+        private Randomizer planetMass = new Randomizer(1, 4);
+        private Randomizer planetColor = new Randomizer(0, 1);
+        private Randomizer xPos = new Randomizer(-50, 50);
+        private Randomizer yPos = new Randomizer(-40, 40);
+
+        private List<Attractor> starList = new List<Attractor>();
+        //private List<Attractor> planetList = new List<Attractor>();
+
+        //private Attractor Planet = new Attractor();
+        // private Attractor AllStar = new Attractor();
         public MainWindow()
         {
             InitializeComponent();
 
-            int xPos = 50;
-            for (int i = 0; i <= 10; i++)
+         
+            for (int i = 0; i <= 30; i++)
             {
-                cubeList.Add(new CubeMesh()
+                starList.Add(new Attractor()
                 {
-                    Position = new Vector3(xPos - (i * 10), 20, 0),
-                    Mass = i + 1
+                    Position = new Vector3((int)xPos.GenerateInt(), (int)yPos.GenerateInt(), 0),
+                    Mass = planetMass.GenerateInt()
                     
                 });
             }
+         
 
         }
 
@@ -50,7 +63,7 @@ namespace aplimat_labs
 
         private Vector3 wind = new Vector3(1f, 0, 0);
         private Vector3 gravity = new Vector3(0.0f, -0.5f, 0.0f );
-        public List<CubeMesh> cubelist = new List<CubeMesh>();
+        public List<CubeMesh> starlist = new List<CubeMesh>();
         #region OpenGl Initilization
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
@@ -62,35 +75,58 @@ namespace aplimat_labs
             // Move Left And Into The Screen
            gl.LoadIdentity();
             gl.Translate(0.0f, 0.0f, -100.0f);
-
-            ocean.Draw(gl);
-
-            foreach (CubeMesh cube in cubeList)
+          //  gl.Color(0, 0f, 1.0f, 0.0f);
+           // Planet.Draw(gl);
+            //Planet.Scale = new Vector3(Planet.Mass, Planet.Mass, Planet.Mass);
+            
+            
+            foreach (Attractor Star in starList)
             {
-                gl.Color(1.0f, 1.0f, 1.0f);
-                cube.Scale = new Vector3( cube.Mass / 2,  cube.Mass / 2,  cube.Mass / 2);
-                cube.Draw(gl);
-                cube.ApplyGravity();
-                cube.ApplyForce(new Vector3(0.1f, 0, 0));
-
-                if (cube.Position.y <= -40)
+                gl.Color(planetColor.GenerateDouble(), planetColor.GenerateDouble(), planetColor.GenerateDouble());
+                
+               
+                foreach (Attractor Planet in starList)
                 {
-                    cube.Position.y = -40;
-                    cube.Velocity.y *= -1;
-                }
+                    Planet.Scale = new Vector3(Planet.Mass, Planet.Mass, Planet.Mass);
+                    Planet.Draw(gl);
 
-                if (ocean.Contains(cube))
-                {
-                    var dragForce = ocean.CalculateDragForce(cube);
-                    cube.ApplyForce(dragForce);
+                    if (Planet != Star)
+                    {
+                        Star.ApplyForce(Planet.CalculateAttraction(Star));
+                    }
+
                 }
             }
 
-
-
             
 
-          
+
+            /*  foreach (CubeMesh cube in cubeList)
+              {
+                  gl.Color(1.0f, 1.0f, 1.0f);
+                  cube.Scale = new Vector3( cube.Mass / 2,  cube.Mass / 2,  cube.Mass / 2);
+                  cube.Draw(gl);
+                  cube.ApplyGravity();
+                  cube.ApplyForce(new Vector3(0.1f, 0, 0));
+
+                  if (cube.Position.y <= -40)
+                  {
+                      cube.Position.y = -40;
+                      cube.Velocity.y *= -1;
+                  }
+
+                  if (ocean.Contains(cube))
+                  {
+                      var dragForce = ocean.CalculateDragForce(cube);
+                      cube.ApplyForce(dragForce);
+                  }
+              }
+
+
+      */
+
+
+
         }
 
         private void OpenGLControl_OpenGLInitialized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)

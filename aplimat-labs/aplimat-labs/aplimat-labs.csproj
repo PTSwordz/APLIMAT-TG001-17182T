@@ -71,8 +71,10 @@
     <Compile Include="Models\CubeMesh.cs" />
     <Compile Include="Models\Movable.cs" />
     <Compile Include="Models\Vector3.cs" />
+    <Compile Include="Utilities\Attractor.cs" />
     <Compile Include="Utilities\Gaussian.cs" />
     <Compile Include="Utilities\Randomizer.cs" />
+    <Compile Include="Utilities\Utils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

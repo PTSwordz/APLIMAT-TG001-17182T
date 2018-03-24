@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using aplimat_labs.Utilities;
 
 namespace aplimat_labs
 {
     public class Vector3
     {
         public float x, y, z;
-        
+        private int xPos;
+        private Randomizer yPos;
+        private int v;
+
         public Vector3()
         {
             x = 0;
@@ -29,6 +33,13 @@ namespace aplimat_labs
             x = (float)_x;
             y = (float)_y;
             z = (float)_z;
+        }
+
+        public Vector3(int xPos, Randomizer yPos, int v)
+        {
+            this.xPos = xPos;
+            this.yPos = yPos;
+            this.v = v;
         }
 
         public static Vector3 operator +(Vector3 rhs, Vector3 lhs) //rhs = right hand side 
